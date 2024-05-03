@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:planotechevents/screens/customer_login.dart';
 import 'package:planotechevents/screens/email_verify.dart';
-import 'package:planotechevents/screens/signup_service.dart';
+
+import 'customer_login.dart';
+import 'signup_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -15,7 +16,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
   bool _isPasswordVisible = false;
-
+  
   // Add controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -23,17 +24,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   // Service instance
-  Service service = Service();
+  Signup_Service service = Signup_Service();
+  
   String _responseMessage = '';
-
+  String mm="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(
-                'assets/background.JPG'), // Change the path to your image file
+            image: AssetImage('assets/final.jpg'), // Change the path to your image file
             fit: BoxFit.cover,
           ),
         ),
@@ -47,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Customer_login(),
+                      builder: (context) => const Customer_login(email: '',),
                     ),
                   );
                 },
@@ -79,16 +80,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               'Get Started',
                               style: TextStyle(
                                 fontSize: 30.0,
                                 fontWeight: FontWeight.w900,
-                                color: Colors.red[300],
+                                color: Color.fromARGB(255, 64, 144, 209),
                               ),
                             ),
                             const SizedBox(height: 20.0),
-                            // Name field
                             TextFormField(
                               controller: _nameController,
                               validator: (value) {
@@ -209,31 +209,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                     var responseBody =
                                         json.decode(response.body);
-
-                                    setState(() {
-                                      _responseMessage =
-                                          responseBody['statusMessage'] ?? '';
-                                    });
-
-                                    if (_responseMessage == 'pass') {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              EmailVerifyOTP(),
-                                        ),
-                                      );
+                                    var m=service.getMail();
+                                    print("88");
+                                    print(m);
+                                    // mm=m;
+                                    print("");
+                                    if (response.statusCode == 200) {
+                                      if (responseBody['statusMessage'] == 'pass') {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                EmailVerifyOTP(email: m),
+                                          ),
+                                        );
+                                      } else {
+                                        setState(() {
+                                          _responseMessage = responseBody['message'] ?? '';
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        _responseMessage = 'An error occurred, please try again later';
+                                      });
                                     }
                                   } else if (!agreePersonalData) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
-                                              'Please agree to the processing of personal data',)),
+                                              'Please agree to the processing of personal data')),
                                     );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red[300],
+                                  backgroundColor: const Color.fromARGB(255, 64, 144, 209),
                                   foregroundColor: Colors.white,
                                 ),
                                 child: const Text('Sign Up'),
@@ -250,13 +259,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       agreePersonalData = value!;
                                     });
                                   },
-                                  activeColor: Colors.red[300],
+                                  activeColor: const Color.fromARGB(255, 64, 144, 209),
                                 ),
                                 const Text(
                                   'I agree to the processing of personal data',
                                   style: TextStyle(
                                     color: Colors.black45,
-                                    fontSize: 13,
                                   ),
                                 ),
                               ],
@@ -277,15 +285,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (e) => const Customer_login(),
+                                        builder: (e) => const Customer_login(email: '',),
                                       ),
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     ' Login',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.red[300],
+                                      color: Color.fromARGB(255, 64, 144, 209),
                                     ),
                                   ),
                                 ),
@@ -295,13 +303,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             // Display registration response message
                             if (_responseMessage.isNotEmpty)
                               Text(
-                                _responseMessage == 'pass'
-                                    ? 'Registration successful!'
-                                    : 'Registration failed: Account already exists',
-                                style: TextStyle(
-                                  color: _responseMessage == 'pass'
-                                      ? Colors.green
-                                      : Colors.red,
+                                _responseMessage,
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 64, 144, 209),
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),

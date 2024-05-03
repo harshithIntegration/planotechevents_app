@@ -12,6 +12,9 @@
         "empdashboard",
         "employe",
         "ﬁnance",
+        "ﬁrst",
+        "formkey",
+        "Karunasagara",
         "leaderboard",
         "LTRB",
         "mobilebackground",
@@ -22,6 +25,7 @@
         "Osta",
         "passsword",
         "Photoshoots",
+        "placemarks",
         "Planotech",
         "planotechevents",
         "punchin",
@@ -33,7 +37,10 @@
         "Themepage",
         "tradeshows",
         "Viewattendance",
+        "viewcustreg",
+        "viewemployee",
         "Viewleads",
-        "Viewreport"
+        "Viewreport",
+        "Viswa"
     ]
 }

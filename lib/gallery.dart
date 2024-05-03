@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PhotoGallery extends StatefulWidget {
+  const PhotoGallery({Key? key}) : super(key: key);
+
   @override
   _PhotoGalleryState createState() => _PhotoGalleryState();
 }
@@ -9,10 +11,16 @@ class _PhotoGalleryState extends State<PhotoGallery> {
   int _currentIndex = 0;
 
   final List<String> _imageAssets = [
-    'assets/abc.jpg',
-    'assets/banner.jpg',
-    'assets/brand.jpg',
-    'assets/data.jpg',
+    'assets/1.jpg',
+    'assets/2.jpg',
+    'assets/3.jpg',
+    'assets/4.jpg',
+    'assets/5.jpg',
+    'assets/6.jpg',
+    'assets/7.jpg',
+    'assets/8.jpg',
+    'assets/9.jpg',
+    'assets/10.jpg',
   ];
 
   @override
@@ -36,15 +44,18 @@ class _PhotoGalleryState extends State<PhotoGallery> {
           },
         ),
       ),
-      body: Center(
+      body:  Center(
         child: SingleChildScrollView(
-          child: Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Container(
             height: 300,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
+                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: const Offset(0, 3), // changes position of shadow
@@ -79,8 +90,32 @@ class _PhotoGalleryState extends State<PhotoGallery> {
               ],
             ),
           ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _buildIndicator(),
+            ),
+          ],
         ),
       ),
+      ),
     );
+  }
+
+  List<Widget> _buildIndicator() {
+    List<Widget> indicators = [];
+    for (int i = 0; i < _imageAssets.length; i++) {
+      indicators.add(
+        Container(
+          width: 10,
+          height: 10,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _currentIndex == i ? Colors.white : Colors.grey,
+          ),
+        ),
+      );
+    }
+    return indicators;
   }
 }

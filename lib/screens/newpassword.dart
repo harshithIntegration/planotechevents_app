@@ -22,7 +22,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
       appBar: AppBar(
         title: const Text('New Password'),
         centerTitle: true,
-        backgroundColor: Colors.red[300],
+        backgroundColor: const Color.fromARGB(255, 64, 144, 209),
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -129,7 +129,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[300],
+                  backgroundColor: const Color.fromARGB(255, 64, 144, 209),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Submit'),

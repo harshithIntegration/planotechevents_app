@@ -59,8 +59,8 @@ class _CustomerPageState extends State<CustomerPage> {
             ),
           ],
         ),
-        toolbarHeight: 100,
-        backgroundColor: const Color.fromRGBO(248, 187, 208, 1),
+        toolbarHeight: 85,
+        backgroundColor: Color.fromARGB(255, 243, 198, 215),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -160,7 +160,7 @@ class _CustomerPageState extends State<CustomerPage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blue[400],
+        backgroundColor: const Color.fromARGB(255, 64, 144, 209),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white,
         currentIndex: 0, 

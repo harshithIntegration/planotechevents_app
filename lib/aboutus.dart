@@ -99,7 +99,7 @@ class _AboutusState extends State<Aboutus> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image.asset(
-                        'assets/us.jpeg',
+                        'assets/aba.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -148,6 +148,7 @@ class _AboutusState extends State<Aboutus> {
                     ),
                     textAlign: TextAlign.justify,
                   ),
+                  const SizedBox(height: 15),
                 ],
               ),
             ),

@@ -11,10 +11,11 @@ class ViewReportsPage extends StatelessWidget {
           'View Reports',
           style: TextStyle(
             color: Colors.white,
+            fontWeight: FontWeight.bold
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue.shade900,
+        backgroundColor: const Color.fromARGB(255, 64, 144, 209),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,

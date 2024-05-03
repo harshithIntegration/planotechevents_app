@@ -28,7 +28,7 @@ class _ConfirmOtpState extends State<ConfirmOtp> {
   }
 
   void startResendTimer() {
-    Timer(Duration(seconds: 30), () {
+    Timer(const Duration(seconds: 30), () {
       setState(() {
         isResendButtonEnabled = true;
       });
@@ -47,14 +47,14 @@ class _ConfirmOtpState extends State<ConfirmOtp> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ResetPasswordPage(),
+                  builder: (context) => const ResetPasswordPage(),
                 ),
               );
             },
             color: Colors.white,
           ),
           centerTitle: true,
-          backgroundColor: Colors.red[300],
+          backgroundColor: const Color.fromARGB(255, 64, 144, 209),
           titleTextStyle: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -99,7 +99,7 @@ class _ConfirmOtpState extends State<ConfirmOtp> {
                         });
                         print('Sending request with email...');
                         startResendTimer();
-                        Timer(Duration(milliseconds: 300), () {
+                        Timer(const Duration(milliseconds: 300), () {
                           setState(() {
                             isResendBlinking = false;
                           });
@@ -107,14 +107,14 @@ class _ConfirmOtpState extends State<ConfirmOtp> {
                       }
                     },
                     child: AnimatedDefaultTextStyle(
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       style: TextStyle(
                         color:
-                            isResendBlinking ? Colors.transparent : Colors.red,
+                            isResendBlinking ? Colors.transparent : const Color.fromARGB(255, 64, 144, 209),
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
-                      child: Text('  Resend OTP'),
+                      child: const Text('  Resend OTP'),
                     ),
                   ),
                   const SizedBox(height: 20.0),
@@ -124,18 +124,18 @@ class _ConfirmOtpState extends State<ConfirmOtp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => NewPasswordPage(),
+                            builder: (context) => const NewPasswordPage(),
                           ),
                         );
                       }
                     },
                     child: const Text('Verify OTP'),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(255, 241, 137, 130),
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                        const Color.fromARGB(255, 248, 248, 248),
                       ),
-                      foregroundColor: MaterialStateProperty.all<Color>(
-                        Colors.white,
+                      foregroundColor: WidgetStateProperty.all<Color>(
+                        const Color.fromARGB(255, 64, 144, 209),
                       ),
                     ),
                   ),

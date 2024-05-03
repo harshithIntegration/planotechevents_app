@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:planotechevents/screens/confirmOtp.dart';
-import 'package:planotechevents/screens/employee_login.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -17,26 +16,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reset Password'),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const EmployeeLogin(),
-              ),
-            );
-          },
-          color: Colors.white,
+        title: const Text(
+          'Reset Password',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.red[300],
-        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 64, 144, 209),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,7 +70,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[300],
+                  backgroundColor: const Color.fromARGB(255, 64, 144, 209),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Reset'),
@@ -108,7 +103,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[300],
+                backgroundColor: const Color.fromARGB(255, 64, 144, 209),
                 foregroundColor: Colors.white,
               ),
               child: const Text('OK'),

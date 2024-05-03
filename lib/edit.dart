@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:planotechevents/dashboard.dart';
+import 'package:planotechevents/admin/adminpage.dart';
+import 'package:planotechevents/profile.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({super.key});
@@ -50,7 +51,7 @@ class _EditPageState extends State<EditPage> {
           'Edit Profile',
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
@@ -59,7 +60,11 @@ class _EditPageState extends State<EditPage> {
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const ProfilePage(),
+              ),
+            );
           },
         ),
       ),
@@ -134,7 +139,7 @@ class _EditPageState extends State<EditPage> {
     
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const Dashboard()),
+      MaterialPageRoute(builder: (context) => const AdminPage()),
     );
   }
 

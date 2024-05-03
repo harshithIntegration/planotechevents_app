@@ -1,9 +1,14 @@
-import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:planotechevents/Customer/customer.dart';
 import 'package:planotechevents/Employee/empdashboard.dart';
 import 'package:planotechevents/aboutus.dart';
+import 'package:planotechevents/admin/adminpage.dart';
 import 'package:planotechevents/contactus.dart';
 import 'package:planotechevents/gallery.dart';
+import 'package:planotechevents/logout.dart';
 import 'package:planotechevents/profile.dart';
 import 'package:planotechevents/screens/welcome_screen.dart';
 import 'package:planotechevents/website%20replica/Brand.dart';
@@ -27,24 +32,40 @@ import 'package:planotechevents/website%20replica/WARE.dart';
 import 'package:planotechevents/website%20replica/Website.dart';
 import 'package:planotechevents/website%20replica/Wedding.dart';
 import 'package:planotechevents/website%20replica/computer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({Key? key}) : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
-  Future<void> _launchURL(String url) async {
-    if (await canLaunchUrl(url as Uri)) {
-      await launchUrl(url as Uri);
-    } else {
-      throw 'Could not launch $url';
-    }
+  Map<String, dynamic>? storedResponse;
+
+  @override
+  void initState() {
+    super.initState();
+    // Call the Response method when the widget is initialized
+    Response();
   }
 
+  Future<void> Response() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('response');
+    if (jsonString != null) {
+      setState(() {
+        storedResponse = jsonDecode(jsonString);
+      });
+      print("++++++++++");
+      print(storedResponse);
+      print("++++++++++");
+    } else {
+      // Handle case when stored response is null
+      print("Stored response is null");
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,14 +75,14 @@ class _DashboardState extends State<Dashboard> {
           children: [
             Image.asset(
               'assets/plano_logo.png',
-              height: 80,
+              height: 300,
               width: 290,
               fit: BoxFit.contain,
             ),
           ],
         ),
         toolbarHeight: 80,
-        backgroundColor: const Color.fromARGB(255, 24, 137, 182),
+        backgroundColor:const Color.fromARGB(255, 64, 144, 209),
       ),
       drawer: SizedBox(
         width: 250,
@@ -70,10 +91,10 @@ class _DashboardState extends State<Dashboard> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               SizedBox(
-                height: 130,
+                height: 140,
                 child: DrawerHeader(
                   decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 24, 137, 182),
+                    color: const Color.fromARGB(255, 64, 144, 209),
                   ),
                   child: Center(
                     child: Column(
@@ -81,6 +102,7 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         InkWell(
                           onTap: () {
+                            if (storedResponse!=null)
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -88,7 +110,7 @@ class _DashboardState extends State<Dashboard> {
                             );
                           },
                           child: const CircleAvatar(
-                            radius: 24,
+                            radius: 31,
                             backgroundImage: AssetImage('assets/avatar.png'),
                           ),
                         ),
@@ -123,10 +145,11 @@ class _DashboardState extends State<Dashboard> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PhotoGallery()),
+                    MaterialPageRoute(builder: (context) => const PhotoGallery()),
                   );
                 },
               ),
+              if(storedResponse==null)
               ListTile(
                 leading: const Icon(Icons.login),
                 title: const Text('Login'),
@@ -134,21 +157,61 @@ class _DashboardState extends State<Dashboard> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const WelcomeScreen()),
+                     builder: (context) => const WelcomeScreen()),
                   );
                 },
               ),
+            if(storedResponse!=null)
+            if(storedResponse?['body']['customerStatus']==false&&storedResponse?['body']['adminStatus']==false)
               ListTile(
-                leading: const Icon(Icons.login),
-                title: const Text('Res'),
+                leading: const Icon(Icons.info),
+                title: const Text('employee'),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EmployeeDashboard()),
+                     builder: (context) => EmployeeDashboard()),
                   );
                 },
               ),
+              if(storedResponse!=null)
+              if(storedResponse?['body']['customerStatus']==true)
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('customer'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                     builder: (context) => CustomerPage()),
+                  );
+                },
+              ),
+              if(storedResponse!=null)
+              if(storedResponse?['body']['adminStatus']==true)
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('admin'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                     builder: (context) => AdminPage()),
+                  );
+                },
+              ),
+              if(storedResponse!=null)
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('logout'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                     builder: (context) => Logout()),
+                  );
+                },
+              ),  
             ],
           ),
         ),
@@ -156,19 +219,11 @@ class _DashboardState extends State<Dashboard> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            // image: DecorationImage(
-            //   // image: AssetImage(
-            //   //     'assets/app.png'), // Change the path to your image file
-            //   fit: BoxFit.cover,
-            // ),
-          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                // child: ClipRRect(
                 decoration: BoxDecoration(
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(15),
@@ -186,7 +241,6 @@ class _DashboardState extends State<Dashboard> {
                   fit: BoxFit.cover,
                 ),
               ),
-              // ),
               const SizedBox(height: 15),
               Container(
                 padding:
@@ -204,7 +258,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               const SizedBox(height: 15),
               const Text(
-                'At Planotech Events & Marketing (OPC) Pvt Ltd, we offer you a robust platform to foster the growth of your company.',
+                'In our Planotech Events & Marketing (OPC) Pvt Ltd, we offer you a robust platform to foster the growth of your company.',
                 textAlign: TextAlign.justify,
                 style: TextStyle(
                   color: Colors.black,
@@ -283,7 +337,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '01 Event Conference & Management',
+                            '01.Event Conference & Management',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -333,7 +387,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '02	Stall Designing & Execution',
+                            '02.Stall Designing & Execution',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -383,7 +437,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '03	Product Launch & Roadshows',
+                            '03.Product Launch & Roadshows',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -434,7 +488,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '04	Designing & Printing',
+                            '04.Designing & Printing',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -484,7 +538,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '05	Website Designing & Development',
+                            '05.Website Designing & Development',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -534,7 +588,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '06	Digital Marketing',
+                            '06.Digital Marketing',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -584,7 +638,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '07	WARE HOUSE SERVICES',
+                            '07.WARE HOUSE SERVICES',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -634,7 +688,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '08	MICE Events',
+                            '08.MICE Events',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -684,7 +738,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '09	Fashion shows',
+                            '09.Fashion shows',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -734,7 +788,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '10	Brand Building And Communication',
+                            '10.Brand Building And Communication',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -784,7 +838,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '11	CSR activities',
+                            '11.CSR activities',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -835,7 +889,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '12	Designing 2d,3d, walk through creations',
+                            '12.Designing 2d,3d, walk through creations',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -885,7 +939,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '13	LEAD GENERATION ACTIVITIES',
+                            '13.LEAD GENERATION ACTIVITIES',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -935,7 +989,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '14	Rnr Activities',
+                            '14.RNR Activities',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -985,7 +1039,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '15	Data management',
+                            '15.Data management',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -1035,7 +1089,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '16	Wedding planning and execution',
+                            '16.Wedding planning and execution',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -1086,7 +1140,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '17	Theme event',
+                            '17.Theme event',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -1136,7 +1190,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '18	Interior designing',
+                            '18.Interior designing',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -1186,7 +1240,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '19	E-mail and SMS activities',
+                            '19.E-mail and SMS activities',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -1236,7 +1290,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '20	Computer Systems & Communication Equipment Software Design',
+                            '20.Computer Systems & Communication Equipment Software Design',
                             style: TextStyle(
                                 fontSize: 16.3, fontWeight: FontWeight.normal),
                           ),
@@ -1286,7 +1340,7 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(width: 20),
                         const Expanded(
                           child: Text(
-                            '21	Tourism & Recreation Consultants',
+                            '21.Tourism & Recreation Consultants',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.normal),
                           ),
@@ -1310,7 +1364,7 @@ class _DashboardState extends State<Dashboard> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      _launchURL('https://www.instagram.com/');
+                    
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -1323,7 +1377,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _launchURL('https://www.facebook.com/');
+                      
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -1336,7 +1390,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _launchURL('https://twitter.com/');
+                  
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -1349,8 +1403,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _launchURL(
-                          'https://www.linkedin.com/company/planotech-events-marketing-pvt-ltd-opc/');
+                     
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 5),

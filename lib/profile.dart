@@ -1,25 +1,52 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:planotechevents/edit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Map<String, dynamic> response;
+  Map<String, dynamic> response = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStoredResponse();
+  }
+
+  Future<void> fetchStoredResponse() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedResponse = prefs.getString('response');
+    if (storedResponse != null) {
+      try {
+        setState(() {
+          response = json.decode(storedResponse);
+        });
+      } catch (e) {
+        print("Error decoding stored response: $e");
+      }
+    } else {
+      print("No stored response found.");
+    }
+    print(response);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Profile Page',
+          'Profile ',
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
@@ -44,33 +71,38 @@ class _ProfilePageState extends State<ProfilePage> {
                   backgroundImage: AssetImage('assets/avatar.png'),
                 ),
               ),
-              const SizedBox(height: 40),
-              // if (response['body'] != null)
-              if (true) ...[
-                // itemProfile('Name', response['body']['userName'], Icons.person),
-                itemProfile('Name', "Sanket", Icons.person),
-                const SizedBox(height: 10),
-                // itemProfile('Phone', response['body']['userPhone'].toString(), Icons.phone),
-                itemProfile('Phone', "1234567890", Icons.phone),
-                const SizedBox(height: 10),
-                // itemProfile('Email', response['body']['userEmail'], Icons.email),
-                itemProfile('Email', "sanket@gmail.com", Icons.email),
-              ],
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const EditPage()),
-                  );
-                },
-                child: const Text(
-                  'Edit Profile',
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 64, 144, 209),
-                  ),
-                ),
-              ),
+              const SizedBox(height: 20),           
+                  if (response.isNotEmpty)
+                  itemProfile('Name', response['body']['userName'], Icons.person),
+                  const SizedBox(height: 10),
+                  if (response.isNotEmpty)
+                  itemProfile('Phone', response['body']['userPhone'].toString(), Icons.phone),
+                  const SizedBox(height: 10),
+                  if (response.isNotEmpty)
+                  itemProfile('Email', response['body']['userEmail'], Icons.email),
+                  if (!response.isNotEmpty)
+                  itemProfile('Name', "", Icons.person),
+                  const SizedBox(height: 10),
+                  if (!response.isNotEmpty)
+                  itemProfile('Phone', "", Icons.phone),
+                  const SizedBox(height: 10),
+                  if (!response.isNotEmpty)
+                  itemProfile('Email', "", Icons.email),
+              // if (response.isNotEmpty)
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const EditPage()),
+              //     );
+              //   },
+              //   child: const Text(
+              //     'Edit Profile',
+              //     style: TextStyle(
+              //       color: Color.fromARGB(255, 64, 144, 209),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
